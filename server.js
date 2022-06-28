@@ -6,42 +6,56 @@ var { buildSchema } = require('graphql');
 var schema = buildSchema(`
   type Query {
     hello: String
-    docente(Cod_Docente: String): Docente
+    docente(id: String): Docente
     docentes: [Docente]
   }
 
+  type Estudiante {
+    id: ID
+    tipoDoc: String
+    identificacion: Int
+    nombres: String
+    direccion: String
+    ciudad: String
+    departamento: String
+    telFijo: Int
+    telMovil: Int
+    email: String
+    genero: String
+  }
+
+  type EstudiantePensum {
+    id: ID
+    idEstudiante: ID
+    idPensum: ID
+    estadoAlumno: String
+  }
+
   type Docente {
-    Cod_Docente: String
-    Nom_Docente: String
+    id: ID
+    nombre: String
   }
 
   type Mutation {
-    agregarDocente(Cod_Docente: String, Nom_Docente: String): Docente
+    agregarDocente(id: String, nombre: String): Docente
   }  
 
 `);
 
 var docentes = [];
-var counter = 0;
 
 // The root provides a resolver function for each API endpoint
 var root = {
   hello: () => {
-    return 'Hello world!';
+    return 'Hola mundo de Graphql!';
   },
   docente: ( data ) => {
-    for ( let i=0; i<docentes.length; i++ ) {
-        if (docentes[i].Cod_Docente == data.Cod_Docente) {
-            return docentes[i];
-        };
-    };
-    return null;
+    return docentes.find( docente  => docente.id === data.id );
   },
   agregarDocente: ( data ) => {
-    counter++;
     let docente = {
-        'Cod_Docente': data.Cod_Docente,
-        'Nom_Docente': data.Nom_Docente
+        id: data.id,
+        nombre: data.nombre
     };
     docentes.push(docente);
     return docente;
